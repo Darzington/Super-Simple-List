@@ -25,7 +25,7 @@ import com.mygdx.supersimplelist.SimpleList.StringBoolean;
 public abstract class GeneralList <T> extends Actor {
 
 	private String listName;
-	private ArrayList<T> list;
+	protected ArrayList<T> list;
 	
 	private transient Table table, wholeTable, header;
 	protected transient Skin skin;
@@ -49,9 +49,15 @@ public abstract class GeneralList <T> extends Actor {
 	private void setUpHeader() {
 		header = new Table(skin);
 
-		header.add(makeBackButton()).center().padLeft(5).width(MasterList.buttonSize).height(MasterList.buttonSize);
+		if (showButtons()) {
+			header.add(makeBackButton()).center().padLeft(5).width(MasterList.buttonSize).height(MasterList.buttonSize);
+		}
+		
 		header.add(new Label(listName, UISkin.skin)).center().expandX();
-		header.add(makeSettingsButton()).center().padRight(5).width(MasterList.buttonSize).height(MasterList.buttonSize);
+		
+		if (showButtons()) {
+			header.add(makeSettingsButton()).center().padRight(5).width(MasterList.buttonSize).height(MasterList.buttonSize);
+		}
 		
 		header.setBackground("list");
 		header.setBounds(0, Gdx.graphics.getHeight() - MasterList.headerHeight, Gdx.graphics.getWidth(), MasterList.headerHeight);
@@ -92,6 +98,8 @@ public abstract class GeneralList <T> extends Actor {
 		refreshTable();
 	}
 	
+	// TODO make a "moveToTopOfChecked" function?
+	
 	public void addToStage(Stage stage) {
 		stage.addActor(header);
 		stage.addActor(wholeTable);
@@ -127,7 +135,7 @@ public abstract class GeneralList <T> extends Actor {
 		return false;
 	}
 	
-	private int getEntryIndex(String entry) {
+	protected int getEntryIndex(String entry) {
 		for (int i = 0; i < list.size(); i++) {
 			if (isThisEntry(list.get(i), entry)) {
 				return i;
@@ -136,15 +144,16 @@ public abstract class GeneralList <T> extends Actor {
 		return -1;
 	}
 
-	protected abstract Button makeBackButton();
-	protected abstract Button makeSettingsButton();
+	protected abstract void onClickBackButton();
+	protected abstract void onClickSettingsButton();
 	protected abstract TextButton makeSpecificItemButton(T entry);
 	protected abstract T createNewEntry(String entry);
 	protected abstract boolean isThisEntry(T value, String entry);
 	protected abstract String getNewEntryGenericName();
 	protected abstract void doTapBehavior(TextButton button, T entry);
+	protected abstract boolean showButtons();
 	
-	protected TextButton makeItemButton(T entry) {
+		protected TextButton makeItemButton(T entry) {
 		final TextButton itemButton = makeSpecificItemButton(entry);
 		itemButton.addListener(new ActorGestureListener() {
 			
@@ -218,6 +227,32 @@ public abstract class GeneralList <T> extends Actor {
 		});
 		
 		return newField;
+	}
+	
+	private Button makeBackButton() {
+		Button backButton = new TextButton("<", UISkin.skin);
+		backButton.addListener(new ClickListener() {
+			
+		    @Override
+			public void clicked (InputEvent event, float x, float y) {
+		    	onClickBackButton();
+			}
+		});
+		
+		return backButton;
+	}
+
+	private Button makeSettingsButton() {
+		Button settingsButton = new TextButton("?", UISkin.skin);
+		settingsButton.addListener(new ClickListener() {
+			
+		    @Override
+			public void clicked (InputEvent event, float x, float y) {
+		    	onClickSettingsButton();
+			}
+		});
+		
+		return settingsButton;
 	}
 	
 	private void refreshTable() {

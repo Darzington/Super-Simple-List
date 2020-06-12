@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,18 +23,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
-public class MasterList extends Actor {
+public class MasterList extends GeneralList<SimpleList> {
 	
-	public static final float headerHeight = Gdx.graphics.getHeight()/10f, buttonSize = headerHeight*0.6f;
-	private ArrayList<SimpleList> allLists;
+	public static transient final float headerHeight = Gdx.graphics.getHeight()/10f, buttonSize = headerHeight*0.6f;
+	private transient int currentListIndex;
 	
 	public MasterList() {
-		allLists = new ArrayList<SimpleList>();
+		this(new ArrayList<SimpleList>());
 	}
 
 	public MasterList(ArrayList<SimpleList> allLists) {
-		this();
-		this.allLists = allLists;
+		super("Super Simple Lists", allLists);
+		currentListIndex = -1;
 	}
 	
 	public void loadData() {
@@ -41,22 +42,60 @@ public class MasterList extends Actor {
 	}
 	
 	public void addToStage(Stage stage) {
-		stage.addActor(this);
-		allLists.stream().forEach(list -> list.addToStage(stage));
-		
+		list.stream().forEach(simpleList -> simpleList.addToStage(stage));
+		super.addToStage(stage);
 	}
 	
 	public void draw (Batch batch, float parentAlpha) {
-		/*
-		header.debug();
-		ShapeRenderer sr = new ShapeRenderer();
-		sr.setAutoShapeType(true);
-		sr.begin();
-		header.drawDebug(sr);
-		sr.end();
-		*/
-		allLists.get(0).draw(batch, parentAlpha);
+		batch.begin();
+		if (currentListIndex == -1) {
+			super.draw(batch, parentAlpha);
+		} else {
+			list.get(currentListIndex).draw(batch, parentAlpha);
+		}
+		batch.end();
+	}
+
+	@Override
+	protected void onClickBackButton() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void onClickSettingsButton() {
+		// TODO Auto-generated method stub
 	}
 	
+	@Override
+	protected boolean showButtons() {
+		return false;
+	}
 
+	@Override
+	protected TextButton makeSpecificItemButton(SimpleList entry) {
+		final TextButton listButton = new TextButton(entry.getListName(), skin);
+		listButton.left();
+		return listButton;
+	}
+
+	@Override
+	protected SimpleList createNewEntry(String entry) {
+		return new SimpleList(entry);
+	}
+
+	@Override
+	protected boolean isThisEntry(SimpleList value, String entry) {
+		return value.getListName().equals(entry);
+	}
+
+	@Override
+	protected String getNewEntryGenericName() {
+		return "List";
+	}
+
+	@Override
+	protected void doTapBehavior(TextButton button, SimpleList entry) {
+		currentListIndex = getEntryIndex(entry.getListName());
+	}
+	
 }

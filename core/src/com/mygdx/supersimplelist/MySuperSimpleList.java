@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MySuperSimpleList extends ApplicationAdapter {
 	
 	private Stage stage;
+	private MasterList masterList;
 	
 	@Override
 	public void create () {   
@@ -29,7 +30,7 @@ public class MySuperSimpleList extends ApplicationAdapter {
 		
 		ArrayList<SimpleList> allLists = new ArrayList<>();
 		allLists.add(new SimpleList());
-		MasterList masterList = new MasterList(allLists);
+		masterList = new MasterList(allLists);
 		masterList.addToStage(stage);
 		
         InputMultiplexer im = new InputMultiplexer();
@@ -43,7 +44,7 @@ public class MySuperSimpleList extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 	    stage.act();
-	    stage.draw();
+	    masterList.draw(stage.getBatch(), 1);
 	}
 	
 	@Override 

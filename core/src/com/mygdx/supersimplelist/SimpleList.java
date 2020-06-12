@@ -1,18 +1,18 @@
 package com.mygdx.supersimplelist;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 	
 	public SimpleList() {
 		this("New List", new ArrayList<StringBoolean>());
+	}
+	
+	public SimpleList(String listName) {
+		this(listName, new ArrayList<StringBoolean>());
 	}
 
 	public SimpleList(String listName, ArrayList<StringBoolean> list) {
@@ -21,12 +21,12 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 	}
 	
 	private void testingStart() {
-		addToListFirst(new StringBoolean("to do 1", true));
-		addToListFirst(new StringBoolean("to do 2", true));
-		addToListFirst(new StringBoolean("to do 3", true));
-		addToListFirst(new StringBoolean("to do 4", true));
-		addToListFirst(new StringBoolean("to do 5", true));
-		addToListFirst(new StringBoolean("to do 6", true));
+		addToListFirst(new StringBoolean("to do 1", false));
+		addToListFirst(new StringBoolean("to do 2", false));
+		addToListFirst(new StringBoolean("to do 3", false));
+		addToListFirst(new StringBoolean("to do 4", false));
+		addToListFirst(new StringBoolean("to do 5", false));
+		addToListFirst(new StringBoolean("to do 6", false));
 	}
 	
 	@Override
@@ -38,31 +38,20 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 	}
 	
 	@Override
-	protected Button makeBackButton() {
-		Button backButton = new TextButton("<", UISkin.skin);
-		backButton.addListener(new ClickListener() {
-			
-		    @Override
-			public void clicked (InputEvent event, float x, float y) {
-		    	// TODO what is back
-			}
-		});
+	protected void onClickBackButton() {
+		// TODO Auto-generated method stub
 		
-		return backButton;
 	}
 
 	@Override
-	protected Button makeSettingsButton() {
-		Button settingsButton = new TextButton("?", UISkin.skin);
-		settingsButton.addListener(new ClickListener() {
-			
-		    @Override
-			public void clicked (InputEvent event, float x, float y) {
-		    	// TODO what is settings
-			}
-		});
+	protected void onClickSettingsButton() {
+		// TODO Auto-generated method stub
 		
-		return settingsButton;
+	}
+	
+	@Override
+	protected boolean showButtons() {
+		return true;
 	}
 
 	@Override
