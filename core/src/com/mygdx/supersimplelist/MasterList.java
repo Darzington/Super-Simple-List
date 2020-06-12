@@ -29,8 +29,6 @@ public class MasterList extends Actor {
 	
 	public MasterList() {
 		allLists = new ArrayList<SimpleList>();
-		
-
 	}
 
 	public MasterList(ArrayList<SimpleList> allLists) {
