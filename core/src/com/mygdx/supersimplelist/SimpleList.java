@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 	
+	private transient boolean shouldClose;
+	
 	public SimpleList() {
 		this("New List", new ArrayList<StringBoolean>());
 	}
@@ -17,6 +19,7 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 
 	public SimpleList(String listName, ArrayList<StringBoolean> list) {
 		super(listName, list);
+		shouldClose = false;
 		testingStart();
 	}
 	
@@ -29,6 +32,14 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 		addToListFirst(new StringBoolean("to do 6", false));
 	}
 	
+	public boolean shouldClose() {
+		return shouldClose;
+	}
+
+	public void resetCloseFlag() {
+		shouldClose = false;
+	}
+
 	@Override
 	protected TextButton makeSpecificItemButton(StringBoolean entry) {
 		final CheckBox checkBox = new CheckBox(entry.getEntry(), skin);
@@ -39,8 +50,7 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean>{
 	
 	@Override
 	protected void onClickBackButton() {
-		// TODO Auto-generated method stub
-		
+		shouldClose = true;
 	}
 
 	@Override

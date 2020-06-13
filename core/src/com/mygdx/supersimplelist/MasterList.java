@@ -48,22 +48,29 @@ public class MasterList extends GeneralList<SimpleList> {
 	
 	public void draw (Batch batch, float parentAlpha) {
 		batch.begin();
-		if (currentListIndex == -1) {
-			super.draw(batch, parentAlpha);
+		
+		SimpleList currentList = currentListIndex >= 0 ? list.get(currentListIndex) : null;
+		if (currentList != null && currentList.shouldClose()) {
+			currentList.resetCloseFlag();
+			currentListIndex = -1;
+			this.setTouchable(Touchable.enabled);
+			this.setVisible(true);
+		} 
+		
+		if (currentListIndex > -1) { 
+			currentList.draw(batch, parentAlpha);
 		} else {
-			list.get(currentListIndex).draw(batch, parentAlpha);
+			super.draw(batch, parentAlpha);
 		}
 		batch.end();
 	}
 
 	@Override
 	protected void onClickBackButton() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	protected void onClickSettingsButton() {
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
@@ -97,6 +104,7 @@ public class MasterList extends GeneralList<SimpleList> {
 	protected void doTapBehavior(TextButton button, SimpleList entry) {
 		currentListIndex = getEntryIndex(entry.getListName());
 		this.setTouchable(Touchable.disabled);
+		this.setVisible(false);
 	}
 	
 }
