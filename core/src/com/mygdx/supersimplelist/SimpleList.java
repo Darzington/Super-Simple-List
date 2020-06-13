@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-public class SimpleList extends GeneralList<SimpleList.StringBoolean> {
+public class SimpleList extends GeneralList<StringBoolean> {
 
 	private transient boolean shouldClose;
 
@@ -54,8 +54,7 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean> {
 
 	@Override
 	protected void onClickSettingsButton() {
-		// TODO Auto-generated method stub
-
+		list.removeIf(sb -> sb.isChecked());
 	}
 
 	@Override
@@ -88,37 +87,6 @@ public class SimpleList extends GeneralList<SimpleList.StringBoolean> {
 	@Override
 	protected boolean isThisEntry(StringBoolean sb, String entry) {
 		return sb.getEntry().equals(entry);
-	}
-
-	public class StringBoolean {
-		private String entry;
-		private boolean isChecked;
-
-		public StringBoolean() {
-			this("", true);
-		}
-
-		public StringBoolean(String entry, boolean isChecked) {
-			this.entry = entry;
-			this.isChecked = isChecked;
-		}
-
-		public String getEntry() {
-			return entry;
-		}
-
-		public void setEntry(String entry) {
-			this.entry = entry;
-		}
-
-		public boolean isChecked() {
-			return isChecked;
-		}
-
-		public void setChecked(boolean isChecked) {
-			this.isChecked = isChecked;
-		}
-
 	}
 
 }

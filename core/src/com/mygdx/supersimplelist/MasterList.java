@@ -71,6 +71,7 @@ public class MasterList extends GeneralList<SimpleList> {
 	@Override
 	protected void doTapBehavior(TextButton button, SimpleList entry) {
 		currentList = list.get(getEntryIndex(entry.getListName()));
+		currentList.setUp();
 		Stage stage = this.getStage();
 		stage.clear();
 		currentList.addToStage(stage);

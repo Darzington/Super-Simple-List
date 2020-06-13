@@ -212,8 +212,10 @@ public abstract class GeneralList<T> extends Actor {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				super.enter(event, x, y, pointer, fromActor);
-				if (tempHolding != null && latestOver != null && latestOver != itemButton) {
-					latestOver.padTop(0);
+				if (tempHolding != null && (latestOver == null || latestOver != itemButton)) {
+					if (latestOver != null) {
+						latestOver.padTop(0);
+					}
 					itemButton.padTop(itemButton.getHeight());
 					table.invalidateHierarchy();
 					wholeTable.invalidateHierarchy();
@@ -257,12 +259,13 @@ public abstract class GeneralList<T> extends Actor {
 	}
 
 	private Button makeSettingsButton() {
-		Button settingsButton = new TextButton("?", UISkin.skin);
+		Button settingsButton = new TextButton("x", UISkin.skin);
 		settingsButton.addListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				onClickSettingsButton();
+				refreshTable();
 			}
 		});
 
