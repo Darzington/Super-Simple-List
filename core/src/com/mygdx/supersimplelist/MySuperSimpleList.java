@@ -10,12 +10,16 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class MySuperSimpleList extends ApplicationAdapter {
 
-	private final String saveName = "savedLists.json";
+	private final String saveName = "save.json";
 	private Stage stage;
 	private MasterList masterList;
 
 	@Override
 	public void create() {
+		startUp();
+	}
+
+	private void startUp() {
 		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
 		new UISkin();
@@ -38,8 +42,22 @@ public class MySuperSimpleList extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
-		stage.dispose();
 		save();
+		stage.dispose();
+		UISkin.skin.dispose();
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		save();
+		UISkin.skin.dispose();
+	}
+
+	@Override
+	public void resume() {
+		startUp();
+		super.resume();
 	}
 
 	private void load() {
@@ -49,17 +67,21 @@ public class MySuperSimpleList extends ApplicationAdapter {
 			json.setIgnoreUnknownFields(true);
 			try {
 				masterList = json.fromJson(MasterList.class, file);
+				masterList.setListName("Super Simple Lists");
 			} catch (Exception e) {
 				masterList = new MasterList();
+				masterList.setListName(e.getMessage());
 			}
 		} else {
 			masterList = new MasterList();
+			masterList.setListName("no savefile");
 		}
 
 		masterList.setUp();
 	}
 
 	private void save() {
+		stage.clear();
 		Json json = new Json();
 		json.setUsePrototypes(false);
 		FileHandle file = Gdx.files.local(saveName);
