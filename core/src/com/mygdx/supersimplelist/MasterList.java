@@ -3,66 +3,34 @@ package com.mygdx.supersimplelist;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 
 public class MasterList extends GeneralList<SimpleList> {
-	
-	public static transient final float headerHeight = Gdx.graphics.getHeight()/10f, buttonSize = headerHeight*0.6f;
-	private transient int currentListIndex;
-	
+
+	public static transient final float headerHeight = Gdx.graphics.getHeight() / 10f, buttonSize = headerHeight * 0.6f;
+	private transient SimpleList currentList;
+
 	public MasterList() {
 		this(new ArrayList<SimpleList>());
 	}
 
 	public MasterList(ArrayList<SimpleList> allLists) {
 		super("Super Simple Lists", allLists);
-		currentListIndex = -1;
 	}
-	
+
 	public void loadData() {
-		
+
 	}
-	
-	public void addToStage(Stage stage) {
-		list.stream().forEach(simpleList -> simpleList.addToStage(stage));
-		super.addToStage(stage);
-	}
-	
-	public void draw (Batch batch, float parentAlpha) {
-		batch.begin();
-		
-		SimpleList currentList = currentListIndex >= 0 ? list.get(currentListIndex) : null;
+
+	public void handleReturnToMasterList() {
 		if (currentList != null && currentList.shouldClose()) {
 			currentList.resetCloseFlag();
-			currentListIndex = -1;
-			this.setTouchable(Touchable.enabled);
-			this.setVisible(true);
-		} 
-		
-		if (currentListIndex > -1) { 
-			currentList.draw(batch, parentAlpha);
-		} else {
-			super.draw(batch, parentAlpha);
+			Stage stage = currentList.getStage();
+			stage.clear();
+			addToStage(stage);
+			currentList = null;
 		}
-		batch.end();
 	}
 
 	@Override
@@ -72,7 +40,7 @@ public class MasterList extends GeneralList<SimpleList> {
 	@Override
 	protected void onClickSettingsButton() {
 	}
-	
+
 	@Override
 	protected boolean showButtons() {
 		return false;
@@ -102,9 +70,10 @@ public class MasterList extends GeneralList<SimpleList> {
 
 	@Override
 	protected void doTapBehavior(TextButton button, SimpleList entry) {
-		currentListIndex = getEntryIndex(entry.getListName());
-		this.setTouchable(Touchable.disabled);
-		this.setVisible(false);
+		currentList = list.get(getEntryIndex(entry.getListName()));
+		Stage stage = this.getStage();
+		stage.clear();
+		currentList.addToStage(stage);
 	}
-	
+
 }
