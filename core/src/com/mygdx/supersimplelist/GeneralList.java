@@ -37,6 +37,10 @@ public abstract class GeneralList<T> extends Actor {
 	public GeneralList(String listName, ArrayList<T> list) {
 		this.listName = listName;
 		this.list = list;
+		setUp();
+	}
+
+	public void setUp() {
 		table = new Table();
 		wholeTable = new Table();
 		setupTableStyles();

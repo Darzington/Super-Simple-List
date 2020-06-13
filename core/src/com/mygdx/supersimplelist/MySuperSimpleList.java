@@ -1,15 +1,16 @@
 package com.mygdx.supersimplelist;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class MySuperSimpleList extends ApplicationAdapter {
 
+	private final String saveName = "savedLists.json";
 	private Stage stage;
 	private MasterList masterList;
 
@@ -19,9 +20,7 @@ public class MySuperSimpleList extends ApplicationAdapter {
 
 		new UISkin();
 
-		ArrayList<SimpleList> allLists = new ArrayList<>();
-		allLists.add(new SimpleList());
-		masterList = new MasterList(allLists);
+		load();
 		masterList.addToStage(stage);
 
 		Gdx.input.setInputProcessor(stage);
@@ -40,6 +39,31 @@ public class MySuperSimpleList extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		stage.dispose();
+		save();
+	}
+
+	private void load() {
+		FileHandle file = Gdx.files.local(saveName);
+		if (file.exists()) {
+			Json json = new Json();
+			json.setIgnoreUnknownFields(true);
+			try {
+				masterList = json.fromJson(MasterList.class, file);
+			} catch (Exception e) {
+				masterList = new MasterList();
+			}
+		} else {
+			masterList = new MasterList();
+		}
+
+		masterList.setUp();
+	}
+
+	private void save() {
+		Json json = new Json();
+		json.setUsePrototypes(false);
+		FileHandle file = Gdx.files.local(saveName);
+		file.writeString(json.toJson(masterList), false);
 	}
 
 }
