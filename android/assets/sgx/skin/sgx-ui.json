@@ -183,7 +183,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 		checkboxOff: checkbox-t
 		checkboxOnDisabled: checkbox-checked-d
 		checkboxOffDisabled: checkbox-d
-		font: small
+		font: title
 		fontColor: font
 		overFontColor: font-over
 		disabledFontColor: font-disabled
@@ -394,7 +394,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
-		font: font
+		font: title
 		fontColor: font
 		overFontColor: font-over
 		disabledFontColor: font-disabled
@@ -485,7 +485,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
-		font: small
+		font: title
 		fontColor: font-text-field
 		background: text-field
 		cursor: black

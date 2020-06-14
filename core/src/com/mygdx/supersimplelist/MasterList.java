@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class MasterList extends GeneralList<SimpleList> {
 
-	public static transient final float headerHeight = Gdx.graphics.getHeight() / 10f, buttonSize = headerHeight * 0.6f;
+	public static transient final float headerHeight = Gdx.graphics.getHeight() / 12f, buttonSize = headerHeight * 0.8f;
 	private transient SimpleList currentList;
 
 	public MasterList() {

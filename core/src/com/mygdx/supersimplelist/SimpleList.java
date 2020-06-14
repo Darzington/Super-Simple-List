@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Scaling;
 
 public class SimpleList extends GeneralList<StringBoolean> {
 
@@ -44,6 +45,8 @@ public class SimpleList extends GeneralList<StringBoolean> {
 		final CheckBox checkBox = new CheckBox(entry.getEntry(), skin);
 		checkBox.left();
 		checkBox.setChecked(entry.isChecked());
+		checkBox.getImage().setScaling(Scaling.fill);
+		checkBox.getImageCell().size(checkBox.getHeight());
 		return checkBox;
 	}
 

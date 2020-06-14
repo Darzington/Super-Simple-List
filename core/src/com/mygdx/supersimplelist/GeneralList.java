@@ -26,6 +26,7 @@ public abstract class GeneralList<T> extends Actor {
 	private String listName;
 	protected ArrayList<T> list;
 
+	private transient final int fieldPadding = 20, entryPadding = 30;
 	private transient Table table, wholeTable, header;
 	protected transient Skin skin;
 	private transient TextButton tempHolding, latestOver;
@@ -52,14 +53,17 @@ public abstract class GeneralList<T> extends Actor {
 	private void setUpHeader() {
 		header = new Table(skin);
 
+		float buttonSidePadding = (MasterList.headerHeight - MasterList.buttonSize) / 2.0f;
+
 		if (showButtons()) {
-			header.add(makeBackButton()).center().padLeft(5).width(MasterList.buttonSize).height(MasterList.buttonSize);
+			header.add(makeBackButton()).center().padLeft(buttonSidePadding).width(MasterList.buttonSize)
+					.height(MasterList.buttonSize);
 		}
 
-		header.add(new Label(listName, UISkin.skin)).center().expandX();
+		header.add(new Label(listName, UISkin.skin, "title")).center().expandX();
 
 		if (showButtons()) {
-			header.add(makeSettingsButton()).center().padRight(5).width(MasterList.buttonSize)
+			header.add(makeSettingsButton()).center().padRight(buttonSidePadding).width(MasterList.buttonSize)
 					.height(MasterList.buttonSize);
 		}
 
@@ -69,7 +73,7 @@ public abstract class GeneralList<T> extends Actor {
 	}
 
 	private void setupTableStyles() {
-		table.defaults().center().width(Gdx.graphics.getWidth() - 20);
+		table.defaults().center().width(Gdx.graphics.getWidth() - entryPadding);
 		wholeTable.defaults().center();
 		skin = UISkin.skin;
 		wholeTable.setSkin(skin);
@@ -128,17 +132,18 @@ public abstract class GeneralList<T> extends Actor {
 		this.listName = listName;
 	}
 
-	private boolean tryToAddIntoListBefore(T entry, String addBeforeThis) {
-		int desiredIndex = getEntryIndex(addBeforeThis);
-		if (desiredIndex >= 0) {
-			if (desiredIndex == list.size() - 1) {
-				addToListAtIndex(entry, list.size());
-			} else {
+	private void tryToAddIntoListBefore(T entry, TextButton latestOver, float x, float y) {
+		if (latestOver == null) {
+			addToListAtIndex(entry, list.size());
+		} else {
+			String addBeforeThis = latestOver.getText().toString();
+			int desiredIndex = getEntryIndex(addBeforeThis);
+			if (desiredIndex >= 0) {
 				addToListAtIndex(entry, desiredIndex);
+			} else {
+				addToListFirst(entry);
 			}
-			return true;
 		}
-		return false;
 	}
 
 	protected int getEntryIndex(String entry) {
@@ -190,17 +195,14 @@ public abstract class GeneralList<T> extends Actor {
 					itemButton.setTouchable(Touchable.disabled);
 				}
 				float holdingY = Gdx.graphics.getHeight() - Gdx.input.getY() - itemButton.getHeight() / 2f;
-				itemButton.setPosition(10, holdingY);
+				itemButton.setPosition(entryPadding / 2.0f, holdingY);
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if (tempHolding != null && tempHolding.equals(itemButton)) {
 					removeFromList(entry);
-					if (!tryToAddIntoListBefore(entry, latestOver.getText().toString())) {
-						System.out.println("fail fast");
-						addToListFirst(entry);
-					}
+					tryToAddIntoListBefore(entry, latestOver, x, y);
 					tempHolding.remove();
 					tempHolding = null;
 				}
@@ -216,11 +218,19 @@ public abstract class GeneralList<T> extends Actor {
 					if (latestOver != null) {
 						latestOver.padTop(0);
 					}
-					itemButton.padTop(itemButton.getHeight());
+					itemButton.padTop(tempHolding.getHeight());
 					table.invalidateHierarchy();
 					wholeTable.invalidateHierarchy();
 				}
 				latestOver = itemButton;
+			}
+
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+				itemButton.padTop(0);
+				table.invalidateHierarchy();
+				wholeTable.invalidateHierarchy();
+				latestOver = null;
 			}
 
 		});
@@ -229,7 +239,7 @@ public abstract class GeneralList<T> extends Actor {
 
 	private TextField makeNewItemField() {
 		TextField newField = new TextField("", UISkin.skin);
-		newField.setMessageText("+ Add New " + getNewEntryGenericName());
+		newField.setMessageText(" + Add New " + getNewEntryGenericName());
 		newField.addListener(new InputListener() {
 
 			@Override
@@ -299,6 +309,9 @@ public abstract class GeneralList<T> extends Actor {
 		wholeTable.setWidth(Gdx.graphics.getWidth());
 		wholeTable.setHeight(Gdx.graphics.getHeight() - MasterList.headerHeight);
 		wholeTable.align(Align.top);
+
+		table.invalidateHierarchy();
+		wholeTable.invalidateHierarchy();
 	}
 
 }
