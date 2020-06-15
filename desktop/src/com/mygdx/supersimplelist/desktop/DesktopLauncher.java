@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		int multiplier = 5;
 		config.width = 90 * multiplier;
 		config.height = 160 * multiplier;
-		new LwjglApplication(new MySuperSimpleList(), config);
+
+		new LwjglApplication(new MySuperSimpleList(null), config);
 	}
 }

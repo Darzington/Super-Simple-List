@@ -7,12 +7,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.ApplicationBundle;
 
 public class MySuperSimpleList extends ApplicationAdapter {
 
 	private final String saveName = "save.json";
 	private Stage stage;
 	private MasterList masterList;
+
+	private transient ApplicationBundle applicationBundle;
+
+	public MySuperSimpleList(ApplicationBundle applicationBundle) {
+		this.applicationBundle = applicationBundle;
+	}
 
 	@Override
 	public void create() {
@@ -69,11 +76,11 @@ public class MySuperSimpleList extends ApplicationAdapter {
 				masterList = json.fromJson(MasterList.class, file);
 				masterList.setListName("Super Simple Lists");
 			} catch (Exception e) {
-				masterList = new MasterList();
+				masterList = new MasterList(applicationBundle);
 				masterList.setListName(e.getMessage());
 			}
 		} else {
-			masterList = new MasterList();
+			masterList = new MasterList(applicationBundle);
 			masterList.setListName("no savefile");
 		}
 

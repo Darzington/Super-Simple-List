@@ -5,18 +5,25 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.ApplicationBundle;
 
 public class MasterList extends GeneralList<SimpleList> {
 
 	public static transient final float headerHeight = Gdx.graphics.getHeight() / 12f, buttonSize = headerHeight * 0.8f;
 	private transient SimpleList currentList;
+	private transient ApplicationBundle applicationBundle;
 
 	public MasterList() {
-		this(new ArrayList<SimpleList>());
+		this(new ArrayList<SimpleList>(), null);
 	}
 
-	public MasterList(ArrayList<SimpleList> allLists) {
-		super("Super Simple Lists", allLists);
+	public MasterList(ApplicationBundle applicationBundle) {
+		this(new ArrayList<SimpleList>(), applicationBundle);
+	}
+
+	public MasterList(ArrayList<SimpleList> allLists, ApplicationBundle applicationBundle) {
+		super("Super Simple Lists", allLists, applicationBundle);
+		this.applicationBundle = applicationBundle;
 	}
 
 	public void loadData() {
@@ -55,7 +62,7 @@ public class MasterList extends GeneralList<SimpleList> {
 
 	@Override
 	protected SimpleList createNewEntry(String entry) {
-		return new SimpleList(entry);
+		return new SimpleList(entry, applicationBundle);
 	}
 
 	@Override

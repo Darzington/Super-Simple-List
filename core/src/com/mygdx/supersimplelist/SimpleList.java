@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Scaling;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.ApplicationBundle;
 
 public class SimpleList extends GeneralList<StringBoolean> {
 
 	private transient boolean shouldClose;
 
 	public SimpleList() {
-		this("New List", new ArrayList<StringBoolean>());
+		this("New List", new ArrayList<StringBoolean>(), null);
 	}
 
-	public SimpleList(String listName) {
-		this(listName, new ArrayList<StringBoolean>());
+	public SimpleList(String listName, ApplicationBundle applicationBundle) {
+		this(listName, new ArrayList<StringBoolean>(), applicationBundle);
 	}
 
-	public SimpleList(String listName, ArrayList<StringBoolean> list) {
-		super(listName, list);
+	public SimpleList(String listName, ArrayList<StringBoolean> list, ApplicationBundle applicationBundle) {
+		super(listName, list, applicationBundle);
 		shouldClose = false;
 	}
 

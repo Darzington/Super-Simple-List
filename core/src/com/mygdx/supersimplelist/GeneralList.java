@@ -17,9 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.ApplicationBundle;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.interfaces.android.AndroidTextInputInterface;
+import com.mygdx.supersimplelist.androidnativekeyboardinputtest.libgdxModified_1_9_3.CalTextField;
 
 public abstract class GeneralList<T> extends Actor {
 
@@ -30,14 +34,22 @@ public abstract class GeneralList<T> extends Actor {
 	private transient Table table, wholeTable, header;
 	protected transient Skin skin;
 	private transient TextButton tempHolding, latestOver;
+	private transient AndroidTextInputInterface androidTextInputInterface;
 
 	public GeneralList() {
-		this("New List", new ArrayList<T>());
+		this("New List", new ArrayList<T>(), null);
 	}
 
-	public GeneralList(String listName, ArrayList<T> list) {
+	public GeneralList(ApplicationBundle applicationBundle) {
+		this("New List", new ArrayList<T>(), applicationBundle);
+	}
+
+	public GeneralList(String listName, ArrayList<T> list, ApplicationBundle applicationBundle) {
 		this.listName = listName;
 		this.list = list;
+		if (applicationBundle != null) {
+			this.androidTextInputInterface = applicationBundle.getAndroidTextInputInterface();
+		}
 		setUp();
 	}
 
@@ -78,6 +90,21 @@ public abstract class GeneralList<T> extends Actor {
 		skin = UISkin.skin;
 		wholeTable.setSkin(skin);
 		wholeTable.setBackground("list");
+	}
+
+	private CalTextField.TextFieldStyle getTextFieldStyle() {
+		// TEXT FIELD STYLES
+		CalTextField.TextFieldStyle textFieldStyle = new CalTextField.TextFieldStyle();
+		textFieldStyle.font = UISkin.skin.getFont("title");
+		textFieldStyle.fontColor = UISkin.skin.getColor("font-text-field");
+		textFieldStyle.background = UISkin.skin.getDrawable("text-field");
+		textFieldStyle.cursor = UISkin.skin.getDrawable("black");
+		textFieldStyle.selection = UISkin.skin.getDrawable("text-field-selection");
+		textFieldStyle.androidKeyboardNumericalOnly = false;
+		textFieldStyle.androidKeyboardAutoCorrect = true;
+		textFieldStyle.androidKeyboardTextSuggestions = true;
+
+		return textFieldStyle;
 	}
 
 	protected void addToListFirst(T newEntry) {
@@ -237,8 +264,31 @@ public abstract class GeneralList<T> extends Actor {
 		return itemButton;
 	}
 
-	private TextField makeNewItemField() {
-		TextField newField = new TextField("", UISkin.skin);
+	private CalTextField makeNewAndroidItemField() {
+
+		CalTextField newField = new CalTextField(" + Add New " + getNewEntryGenericName(), getTextFieldStyle(),
+				androidTextInputInterface);
+
+		newField.setMessageText(" + Add New " + getNewEntryGenericName());
+		newField.addListener(new InputListener() {
+
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				if (character == '\n' || character == '\r') {
+					addToListFirst(createNewEntry(newField.getText()));
+					return true;
+				}
+				return false;
+			}
+		});
+
+		return newField;
+	}
+
+	private TextField makeNewDesktopItemField() {
+
+		TextField newField = new TextField(" + Add New " + getNewEntryGenericName(), UISkin.skin);
+
 		newField.setMessageText(" + Add New " + getNewEntryGenericName());
 		newField.addListener(new InputListener() {
 
@@ -295,7 +345,8 @@ public abstract class GeneralList<T> extends Actor {
 		wholeTable.clear();
 
 		Table scrollTable = new Table();
-		scrollTable.add(makeNewItemField()).width(Gdx.graphics.getWidth() - 10);
+		Widget inputField = androidTextInputInterface == null ? makeNewDesktopItemField() : makeNewAndroidItemField();
+		scrollTable.add(inputField).width(Gdx.graphics.getWidth() - fieldPadding);
 		scrollTable.row();
 		scrollTable.add(table);
 		scrollTable.row();
