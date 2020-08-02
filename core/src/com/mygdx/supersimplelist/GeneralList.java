@@ -90,7 +90,7 @@ public abstract class GeneralList<T> extends Actor {
 		refreshTable();
 	}
 
-	private void removeFromList(T removedEntry) {
+	protected void removeFromList(T removedEntry) {
 		list.remove(removedEntry);
 		refreshTable();
 	}
@@ -169,6 +169,9 @@ public abstract class GeneralList<T> extends Actor {
 
 	protected abstract void doTapBehavior(TextButton button, T entry);
 
+	protected void doLongTapBehavior(TextButton button, T entry) {
+	}
+
 	protected abstract boolean showButtons();
 
 	protected TextButton makeItemButton(T entry) {
@@ -177,7 +180,7 @@ public abstract class GeneralList<T> extends Actor {
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
-				removeFromList(entry);
+				doLongTapBehavior(itemButton, entry);
 				return false;
 			}
 

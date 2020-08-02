@@ -23,15 +23,6 @@ public class SimpleList extends GeneralList<StringBoolean> {
 		shouldClose = false;
 	}
 
-	private void testingStart() {
-		addToListFirst(new StringBoolean("to do 1", false));
-		addToListFirst(new StringBoolean("to do 2", false));
-		addToListFirst(new StringBoolean("to do 3", false));
-		addToListFirst(new StringBoolean("to do 4", false));
-		addToListFirst(new StringBoolean("to do 5", false));
-		addToListFirst(new StringBoolean("to do 6", false));
-	}
-
 	public boolean shouldClose() {
 		return shouldClose;
 	}

@@ -77,4 +77,9 @@ public class MasterList extends GeneralList<SimpleList> {
 		currentList.addToStage(stage);
 	}
 
+	@Override
+	protected void doLongTapBehavior(TextButton button, SimpleList entry) {
+		super.removeFromList(entry);
+	}
+
 }
